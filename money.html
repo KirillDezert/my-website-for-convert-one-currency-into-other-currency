@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="money.css">
+    <title>Currency converter</title>
+</head>
+<body>
+
+    <p class="converter">Welcome to 💱 Currency converter</p>
+
+    <input type="number" id="conv" placeholder="Amount">
+
+    <select id="EnterCurrency" class="currency-row"></select>
+    <select id="ResultsCurrency" class="currency-row"></select>
+
+    
+    <button id="convBtn">Convert</button>
+
+    <div id="result" style="display: none;">
+        <select id="resultEnter" class="currency-row"></select>
+        <select id="resultExit" class="currency-row"></select>
+    </div>
+    <script src="config.js"></script>
+    <script src="money.js"></script>
+</body>
+</html>

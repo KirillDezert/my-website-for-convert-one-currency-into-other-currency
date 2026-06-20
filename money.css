@@ -1,0 +1,43 @@
+body{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: blanchedalmond;
+}
+.conv{
+    background-color: black;
+    color: antiquewhite;
+    box-shadow: rgba(0, 0, 0,0);
+}
+
+.conv:hover{
+    transform: scale(1.2);
+
+    transition: transform 0.4s ease ;
+}
+
+.input{
+    background-color: black;
+    color: antiquewhite;
+    box-shadow: rgba(0, 0, 0, 0);
+}
+
+.input:hover{
+    transform: scale(1.2);
+
+    transition: transform 0.4s ease;
+}
+
+.converter{
+    display: block;
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 20px;
+    
+}
+
+
