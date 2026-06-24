@@ -1,50 +1,70 @@
-const currencies = {
-    EUR: "Euro",
-    CAD: "Canadian Dollar",
-    AUD: "Australian Dollar",
-    GBP: "British Pound",
-    INR: "Indian Rupee",
-    JPY: "Japanese Yen",
-    USD: "United States Dollar",
-    ZAR: "South African Rand"
-};
+async function loadCurrencies() {
+    const response = await fetch(
+        "https://api.frankfurter.dev/v2/currencies"
+    );
 
-const firstSelect = document.getElementById("EnterCurrency");
-const secondSelect = document.getElementById("ResultsCurrency");
-const convertButton = document.getElementById("convBtn");
+    const currencies = await response.json();
 
-function getOption(data) {
-    return Object.entries(data)
-        .map(([code, name]) => `<option value="${code}">${code} | ${name}</option>`)
-        .join("");
+    currencies.forEach(currency => {
+        let optionCurrencyFrom = document.createElement("option");
+        optionCurrencyFrom.value = currency.iso_code;
+        optionCurrencyFrom.textContent = 
+            currency.iso_code + " - " + currency.name;
+
+        let optionCurrencyTo = optionCurrencyFrom.cloneNode(true);
+
+        currencyFromSelect.appendChild(optionCurrencyFrom);
+        currencyToSelect.appendChild(optionCurrencyTo);
+    });
 }
 
-// insert currencies into dropdowns
-firstSelect.innerHTML = getOption(currencies);
-secondSelect.innerHTML = getOption(currencies);
-
-convertButton.addEventListener("click", fetchCurrencies);
-
 function fetchCurrencies() {
-    const baseCur = firstSelect.value;
-    const targetCur = secondSelect.value;
-    const amount = parseFloat(document.getElementById("conv").value);
+    const currencyNameFrom = currencyFromSelect.value;
+    const currencyNameTo = currencyToSelect.value;
+
+    const amount = parseFloat(document.getElementById("AmountOfMoney").value);
 
     if (isNaN(amount)) {
-        alert("Please enter a valid number!");
+        showPopup("Amount cannot be empty", "Error");
         return;
     }
 
-    fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${baseCur}`)
-        .then(res => res.json())
-        .then(data => {
-            const rate = data.conversion_rates[targetCur];
-            const result = amount * rate;
+    if (currencyNameFrom === currencyNameTo) {
+        showPopup("Currencies cannot be same", "Error");
+        return;
+    }
 
-            document.getElementById("result").style.display = "block";
-            document.getElementById("resultEnter").textContent =
-               ` ${amount} ${baseCur} =`
-            document.getElementById("resultExit").textContent =
-                `${result.toFixed(2)} ${targetCur}`;
-        });
+    fetch(`https://api.frankfurter.dev/v2/rate/${currencyNameFrom}/${currencyNameTo}`)
+    .then(res => res.json())
+    .then(data => {      
+        document.getElementById("result").style.display = "block";
+        document.getElementById("resultEnter").value =
+                `${amount} ${currencyNameFrom}`
+        document.getElementById("resultExit").value =
+                 `${(data["rate"]*amount).toFixed()} ${currencyNameTo}`;
+    });
+    
 }
+
+function showPopup(message, type = "success", duration = 3000) {
+    const popup = document.querySelector("#PopupNotification");
+
+    popup.textContent = message;
+    popup.className = `popup ${type} show`;
+
+    clearTimeout(popupTimer);
+
+    popupTimer = setTimeout(() => {
+        popup.classList.remove("show");
+    }, duration);
+}
+
+const currencyFromSelect = document.getElementById("SelectCurrencyNameFrom");
+const currencyToSelect = document.getElementById("SelectCurrencyNameTo");
+const convertButton = document.getElementById("convBtn");
+
+convertButton.addEventListener("click", fetchCurrencies);
+
+let popupTimer;
+
+loadCurrencies();
